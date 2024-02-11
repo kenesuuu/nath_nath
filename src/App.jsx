@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import './App.css';
 
 const phrases = [
@@ -35,7 +35,9 @@ const noPictures = [
 function App() {
   const [noCount, setNoCount] = useState(0);
   const [yesPressed, setYesPressed] = useState(false);
-  const [currentNoPicture, setCurrentNoPicture] = useState(noPictures[0]); 
+  const [currentNoPicture, setCurrentNoPicture] = useState(noPictures[0]);
+  const [noPosition, setNoPosition] = useState({ x: 0, y: 0 });
+  const yesRef = useRef(null);
 
   const yesButtonSize = noCount * 20 + 16;
 
@@ -46,7 +48,7 @@ function App() {
 
   async function handleYesClick() {
     setYesPressed(true);
-    const response = await fetch('/api/send-sms', { // Updated path
+    const response = await fetch('http://localhost:3001/send-sms', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -56,17 +58,35 @@ function App() {
         message: 'Nathalie said yes! Yeyyyyy!',
       }),
     });
-  
+
     if (!response.ok) {
       console.error('Failed to send SMS');
     } else {
       console.log('SMS sent successfully');
     }
-  }  
+  }
 
   function getNoButtonText() {
     return phrases[Math.min(noCount, phrases.length - 1)];
   }
+
+  function handleNoHover() {
+    // Generate random position for the "No" button within the window
+    const newX = Math.random() * (window.innerWidth - 150); // 150 is the width of the button
+    const newY = Math.random() * (window.innerHeight - 50); // 50 is the height of the button
+    setNoPosition({ x: newX, y: newY });
+  }
+
+  // Ensure the initial position of the "No" button is aligned with the "Yes" button
+  React.useEffect(() => {
+    if (yesRef.current) {
+      const yesButtonRect = yesRef.current.getBoundingClientRect();
+      setNoPosition({
+        x: yesButtonRect.right + 10,
+        y: yesButtonRect.top - 4,
+      });
+    }
+  }, []);
 
   return (
     <div className='valentine-container'>
@@ -81,17 +101,25 @@ function App() {
 
           <div className='text'>Hello, Nathalie! Will you be my Valentine?</div>
           <div>
-            <button className='yesButton' style={{ fontSize: yesButtonSize, backgroundColor: 'green', color: 'white' }} onClick={handleYesClick}>
+            <button
+              ref={yesRef}
+              className='yesButton'
+              style={{ fontSize: yesButtonSize, backgroundColor: 'green', color: 'white' }}
+              onClick={handleYesClick}>
               Yes
             </button>
-            <button onClick={handleNoClick} className='noButton' style={{ backgroundColor: 'red', color: 'white' }}>
+            <button
+              className='noButton'
+              style={{ backgroundColor: 'red', color: 'white', position: 'absolute', left: noPosition.x, top: noPosition.y }}
+              onClick={handleNoClick}
+              onMouseEnter={handleNoHover}>
               {getNoButtonText()}
             </button>
           </div>
         </>
       )}
     </div>
-  );  
+  );
 }
 
 export default App;

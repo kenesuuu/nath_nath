@@ -15,7 +15,12 @@ const corsMiddleware = cors({
 
 export default async function handler(req, res) {
   // Apply CORS middleware
-  await corsMiddleware(req, res);
+  await new Promise((resolve, reject) => {
+    corsMiddleware(req, res, (err) => {
+      if (err) return reject(err);
+      resolve();
+    });
+  });
 
   if (req.method === 'POST') {
     const { phoneNumber, message } = req.body;
