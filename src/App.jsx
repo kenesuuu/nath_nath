@@ -34,14 +34,12 @@ const noPictures = [
 
 const yesPictures = [
   "https://i.pinimg.com/564x/db/6d/5c/db6d5ce75208eabbc87b564eafcbdaa8.jpg",
-  "https://i.postimg.cc/4xwqsCz2/Untitled-Export-y-XSr-UCh-Xp.png",
   "https://media1.tenor.com/m/ns27oDL6PPIAAAAC/cats-cat-with-flower.gif",
   "https://i.pinimg.com/564x/41/e2/db/41e2dbf1b9ebe97a4f0e9ef6f469863d.jpg",
   "https://i.pinimg.com/736x/37/48/ad/3748add39edab008a50bdf006f14cf37.jpg",
   "https://i.pinimg.com/236x/96/29/de/9629dea9e7ed89fb8ea86d9676893fe4.jpg",
   "https://i.pinimg.com/236x/9c/e4/1d/9ce41dd08aa8990cc1d2e6951f8d8093.jpg",
   "https://i.pinimg.com/236x/61/a9/18/61a91802b9d2aaf12e13e49cc6e9fb81.jpg",
-  "https://i.postimg.cc/4xwqsCz2/Untitled-Export-y-XSr-UCh-Xp.png",
   "https://i.pinimg.com/736x/f1/80/a0/f180a0864378b9fa7afedb678de58a8a.jpg",
   "https://i.pinimg.com/564x/af/ce/3f/afce3f46d532f8b858bcd5de5cd343ef.jpg",
   "https://i.pinimg.com/736x/1e/de/e9/1edee9bf196ec4582043339820eb88c9.jpg",
@@ -49,8 +47,7 @@ const yesPictures = [
   "https://i.pinimg.com/564x/a2/60/d7/a260d7537bf5b824ed858894148be0c1.jpg",
   "https://i.pinimg.com/564x/f8/68/d9/f868d9c4171cb4e472e2c1df531c809b.jpg",
   "https://i.pinimg.com/736x/bb/47/fc/bb47fcd95f5415085376e2f3c76c1207.jpg",
-  "https://i.pinimg.com/736x/1f/2f/75/1f2f75bc7f84d4e9d50ce246d2cc28d1.jpg",
-  "https://i.postimg.cc/4xwqsCz2/Untitled-Export-y-XSr-UCh-Xp.png"
+  "https://i.pinimg.com/736x/1f/2f/75/1f2f75bc7f84d4e9d50ce246d2cc28d1.jpg"
 ];
 
 function App() {
@@ -94,24 +91,16 @@ function App() {
       console.log('SMS sent successfully');
     }
 
-    // Shuffle the yesPictures array to randomize picture order
-    const shuffledPictures = [...yesPictures].sort(() => Math.random() - 0.5);
-    let index = 0;
-
-    // Change picture to the next one in shuffledPictures in a loop
+    // Change picture to the next one in yesPictures in a loop
     const yesInterval = setInterval(() => {
-      setCurrentYesPictureIndex(index % shuffledPictures.length);
-      index++;
+      setCurrentYesPictureIndex((currentYesPictureIndex + 1) % yesPictures.length);
     }, 3000);
-
-    // Clear any existing interval for "No" pictures
-    clearInterval(noInterval);
 
     // Reset the index after all pictures have been displayed
     setTimeout(() => {
       setCurrentYesPictureIndex(0);
-      clearInterval(yesInterval); // Stop the interval
-    }, shuffledPictures.length * 3000);
+      clearInterval(yesInterval); // Clear interval after all pictures have been displayed
+    }, yesPictures.length * 3000);
   }
 
   function getButtonText() {
@@ -131,7 +120,7 @@ function App() {
       const yesButtonRect = yesRef.current.getBoundingClientRect();
       setNoPosition({
         x: yesButtonRect.right + 1,
-        y: yesButtonRect.top - 12,
+        y: yesButtonRect.top + 4,
       });
     }
   }, []);
