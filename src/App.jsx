@@ -120,7 +120,7 @@ function App() {
       const yesButtonRect = yesRef.current.getBoundingClientRect();
       setNoPosition({
         x: yesButtonRect.right + 1,
-        y: yesButtonRect.top + 4,
+        y: yesButtonRect.top - 12,
       });
     }
   }, []);
